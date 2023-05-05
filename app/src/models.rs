@@ -1,7 +1,8 @@
 use crate::schema::memos;
 use diesel::prelude::*;
+use serde::Serialize;
 
-#[derive(Queryable, Debug)]
+#[derive(Queryable, Debug, Serialize)]
 pub struct Memo {
     pub id: i32,
     pub content: String,

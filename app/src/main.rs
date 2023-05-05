@@ -1,16 +1,30 @@
 use self::models::{Memo, NewMemo};
+use actix_web::{get, web, Responder, Result};
 use app::*;
 use diesel::prelude::*;
 
-fn main() {
-    write_memo("Hello world");
-
+#[get("/")]
+async fn index() -> Result<impl Responder> {
     let memoslist: Vec<Memo> = show_memos();
+    Ok(web::Json(memoslist))
+}
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    use actix_web::{App, HttpServer};
+    println!("127.0.0.1:8080/");
 
-    println!("{:?}", memoslist);
-    for memo in memoslist {
-        println!("{}", memo.content);
-    }
+    HttpServer::new(|| App::new().service(index))
+        .bind(("127.0.0.1", 8080))?
+        .run()
+        .await
+    // write_memo("Hello world");
+
+    // let memoslist: Vec<Memo> = show_memos();
+
+    // println!("{:?}", memoslist);
+    // for memo in memoslist {
+    //     println!("{}", memo.content);
+    // }
 }
 
 pub fn show_memos() -> Vec<Memo> {
